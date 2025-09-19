@@ -11,22 +11,25 @@ provider "kubernetes" {
 }
 
 variable "flask_code" {
-  type    = string
+  type = string
+
   default = <<EOT
-from flask import Flask
-app = Flask(__name__)
+    from flask import Flask, jsonify
+    app = Flask(__name__)
+    @app.route('/')
+    def home():
+    return '<h1>Flask V2</h1>'
+    @app.route('/status')
+    def status():
+    return jsonify(status='running', version='V2')
+    app.run(host='0.0.0.0', port=8080)
+    EOT
 
-@app.route('/')
-def home():
-    return '<h1>Flask V1</h1>'
-
-app.run(host='0.0.0.0', port=8080)
-EOT
 }
 
 resource "kubernetes_config_map" "flask_code" {
   metadata {
-    name = "flask-code"
+    name      = "flask-code"
     namespace = "zkrmmm-dev"
   }
 
@@ -59,8 +62,8 @@ resource "kubernetes_deployment" "flask" {
 
       spec {
         container {
-          name  = "flask"
-          image = "registry.redhat.io/ubi9/python-39"
+          name    = "flask"
+          image   = "registry.redhat.io/ubi9/python-39"
           command = ["sh", "-c", "pip install Flask && python3 /app/app.py"]
 
           volume_mount {
@@ -86,7 +89,7 @@ resource "kubernetes_deployment" "flask" {
 }
 resource "kubernetes_service" "flask" {
   metadata {
-    name = "flask-service"
+    name      = "flask-service"
     namespace = "zkrmmm-dev"
   }
 
