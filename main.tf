@@ -18,10 +18,10 @@ variable "flask_code" {
     app = Flask(__name__)
     @app.route('/')
     def home():
-    return '<h1>Flask V2</h1>'
+      return '<h1>Flask V2</h1>'
     @app.route('/status')
     def status():
-    return jsonify(status='running', version='V2')
+      return jsonify(status='running', version='V2')
     app.run(host='0.0.0.0', port=8080)
     EOT
 
