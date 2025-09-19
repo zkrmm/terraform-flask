@@ -35,56 +35,6 @@ resource "kubernetes_config_map" "flask_code" {
   }
 }
 
-# resource "kubernetes_deployment" "flask" {
-#   metadata {
-#     name = "flask-app"
-#     namespace = "zkrmmm-dev"
-#   }
-
-#   spec {
-#     replicas = 1
-
-#     selector {
-#       match_labels = {
-#         app = "flask-app"
-#       }
-#     }
-
-#     template {
-#       metadata {
-#         labels = {
-#           app = "flask-app"
-#         }
-#       }
-
-#       spec {
-#         container {
-#           name    = "flask"
-#           image   = "registry.redhat.io/ubi9/python-39"
-#           command = ["python3", "/app/app.py"]
-
-#           volume_mount {
-#             mount_path = "/app/app.py"
-#             sub_path   = "app.py"
-#             name       = "code"
-#           }
-
-#           port {
-#             container_port = 8080
-#           }
-#         }
-
-#         volume {
-#           name = "code"
-
-#           config_map {
-#             name = kubernetes_config_map.flask_code.metadata[0].name
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
 resource "kubernetes_deployment" "flask" {
   metadata {
     name      = "flask-app"
